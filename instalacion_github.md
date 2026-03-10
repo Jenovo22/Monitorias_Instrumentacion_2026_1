@@ -370,6 +370,26 @@ El repositorio debe mostrar:
 
 ---
 
+---
+
+# 12. Recursos de instalación
+
+A continuación se incluyen algunos videos que explican el proceso de instalación y uso básico de Git y GitHub. Estos recursos pueden servir como apoyo si se presentan dudas durante la configuración inicial.
+
+## Instalación y configuración básica de Git y GitHub
+
+* Instalación y uso básico de Git y GitHub
+  https://www.youtube.com/watch?v=cae7EFzd02M
+
+* Introducción a GitHub y flujo básico de trabajo
+  https://www.youtube.com/watch?v=r4ynZyLuf-o
+
+* Uso de GitHub para gestionar proyectos
+  https://www.youtube.com/watch?v=mq-CDUwHe8Y
+
+Se recomienda ver al menos uno de estos videos antes de comenzar a utilizar GitHub para los laboratorios.
+
+
 # Herramientas utilizadas
 
 * Arduino IDE
