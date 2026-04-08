@@ -25,87 +25,25 @@ En este curso usaremos GitHub para:
 
 Un **repositorio** es la carpeta del proyecto que se almacena en GitHub.
 
-Ejemplo de estructura:
+## Fork
 
-```
-Laboratorios-ESP32/
-   laboratorio1/
-      led_blink.ino
-   laboratorio2/
-      sensor_ultrasonico.ino
-   README.md
-```
-
-Todo lo que esté dentro del repositorio puede almacenarse en GitHub.
-
----
+Un **Fork** es crear una copia exacta de un repositorio ajeno en tu propia cuenta. Esto te permite editar el proyecto y subir tus propios cambios sin afectar el original.
 
 ## Commit
 
-Un **commit** es un registro de cambios en el proyecto.
-
-Cada commit incluye:
-
-* Los archivos modificados
-* Un mensaje explicando qué se cambió
-
-Ejemplo:
-
-```
-Commit: "Se agregó lectura del sensor DHT11"
-```
-
----
+Un **commit** es un registro de cambios en el proyecto. Cada commit incluye los archivos modificados y un mensaje explicando qué se cambió.
 
 ## Push
 
-**Push** significa **subir los cambios al repositorio en GitHub**.
-
-Dirección:
-
-```
-computador → GitHub
-```
-
-Después de realizar cambios en el código:
-
-```
-commit → push
-```
-
----
+**Push** significa **subir los cambios al repositorio en GitHub** (Computador → GitHub).
 
 ## Pull
 
-**Pull** significa **descargar cambios desde GitHub al computador**.
-
-Dirección:
-
-```
-GitHub → computador
-```
-
-Se usa cuando el repositorio tiene cambios que aún no están en el computador.
-
----
+**Pull** significa **descargar cambios desde GitHub al computador** (GitHub → Computador).
 
 ## Branch (rama)
 
-Una **rama** es una versión paralela del proyecto que permite trabajar sin afectar la versión principal.
-
-Ejemplo:
-
-```
-main
-wifi-test
-sensor-development
-```
-
-Para los laboratorios normalmente se trabajará únicamente en:
-
-```
-main
-```
+Una **rama** es una versión paralela del proyecto. Para los laboratorios normalmente se trabajará únicamente en la rama: `main`.
 
 ---
 
@@ -114,284 +52,118 @@ main
 Para este curso se utilizarán:
 
 * **Arduino IDE**
-* **GitHub Desktop**
+* **GitHub Desktop** (Herramienta principal)
 * **GitHub**
-
-No es necesario instalar VSCode.
+* **Git Bash** (Opcional - para comandos de consola)
 
 ---
 
 ## Paso 1 — Crear cuenta en GitHub
 
-Ir a:
-
-```
-https://github.com
-```
-
-Crear una cuenta personal.
+Ir a: `https://github.com` y crear una cuenta personal.
 
 ---
 
 ## Paso 2 — Instalar GitHub Desktop
 
-Descargar desde:
-
-```
-https://desktop.github.com
-```
-
-Instalar el programa e iniciar sesión con la cuenta de GitHub.
-
-GitHub Desktop permite usar Git sin necesidad de usar la terminal.
+Descargar desde: `https://desktop.github.com`. Instalar e iniciar sesión. Permite usar Git de forma visual sin necesidad de usar la terminal.
 
 ---
 
 # 4. Crear su propio repositorio para los laboratorios
 
-Cada estudiante debe crear un repositorio donde subirá el código de los laboratorios.
+## Paso 1 — Realizar un Fork (Si el monitor provee una base)
+Si el monitor indica un repositorio base, presiona el botón **Fork** en la parte superior derecha de la página de GitHub para tener tu propia copia.
 
-## Paso 1 — Crear el repositorio
-
-En GitHub seleccionar:
-
-```
-New repository
-```
-
-Configuración recomendada:
-
-Nombre del repositorio:
-
-```
-laboratorios-esp32
-```
-
-Opciones:
-
-* Public o Private según indique el curso
-* Activar la opción **Add README**
-
-Luego seleccionar:
-
-```
-Create repository
-```
+## Paso 2 — Crear un repositorio nuevo
+Si empiezas desde cero, en GitHub selecciona `New repository`. 
+* Nombre: `laboratorios-esp32`
+* Opción: Activar **Add README**
 
 ---
 
 # 5. Descargar el repositorio al computador
 
 Abrir **GitHub Desktop**.
-
-Ir a:
-
-```
-File → Clone repository
-```
-
-Seleccionar el repositorio:
-
-```
-laboratorios-esp32
-```
-
-Elegir la carpeta donde se guardará en el computador.
-
-Ejemplo:
-
-```
-Documentos/
-   laboratorios-esp32/
-```
-
-Esta carpeta estará sincronizada con GitHub.
+1. Ir a: `File → Clone repository`.
+2. Seleccionar su repositorio.
+3. Elegir la carpeta local (Ejemplo: `Documentos/laboratorios-esp32/`).
 
 ---
 
 # 6. Organización recomendada del repositorio
 
-Se recomienda crear una carpeta por cada laboratorio.
-
-Ejemplo:
-
+Se recomienda crear una carpeta por cada laboratorio o punto:
 ```
 laboratorios-esp32/
-
    laboratorio1/
       led_blink.ino
-
    laboratorio2/
       sensor_ultrasonico.ino
-
-   laboratorio3/
-      wifi_test.ino
 ```
-
-Esto permite mantener el repositorio organizado.
 
 ---
 
 # 7. Editar el código con Arduino IDE
 
-Abrir la carpeta del laboratorio.
-
-Ejemplo:
-
-```
-laboratorio1/
-```
-
-Abrir el archivo:
-
-```
-led_blink.ino
-```
-
-en **Arduino IDE**.
-
-Ejemplo de código:
-
-```cpp
-void setup() {
-  pinMode(2, OUTPUT);
-}
-
-void loop() {
-  digitalWrite(2, HIGH);
-  delay(500);
-  digitalWrite(2, LOW);
-  delay(500);
-}
-```
-
-Guardar siempre los archivos **dentro del repositorio**.
+1. Abrir el archivo `.ino` desde la carpeta del repositorio.
+2. Realizar los cambios necesarios.
+3. **Guardar siempre los archivos** antes de volver a GitHub Desktop.
 
 ---
 
-# 8. Subir el laboratorio a GitHub
+# 8. Subir el laboratorio a GitHub (Flujo Principal)
 
-Abrir **GitHub Desktop**.
-
-El programa detectará automáticamente los archivos nuevos o modificados.
-
-Ejemplo:
-
-```
-laboratorio1/led_blink.ino
-```
-
----
+Abrir **GitHub Desktop**. El programa detectará automáticamente los cambios.
 
 ## Paso 1 — Crear un commit
-
-Escribir un mensaje que describa el cambio.
-
-Ejemplo:
-
-```
-Laboratorio 1: LED intermitente en ESP32
-```
-
-Seleccionar:
-
-```
-Commit to main
-```
-
----
+En el recuadro inferior izquierdo (Summary), escribe qué hiciste. Ejemplo: `"Punto 3: Lectura de LDR funcionando"`. Seleccionar **Commit to main**.
 
 ## Paso 2 — Subir a GitHub
-
-Presionar:
-
-```
-Push origin
-```
-
-Esto subirá los cambios al repositorio en GitHub.
+Presionar el botón **Push origin** en la parte superior.
 
 ---
 
-# 9. Flujo de trabajo para cada laboratorio
+# 9. Cómo restaurar versiones (Si algo falla)
 
-Para cada laboratorio se debe seguir el siguiente proceso:
+### Caso A: Si aún no has hecho Commit
+Si dañaste el código y quieres volver a como estaba al inicio:
+* En GitHub Desktop, en la pestaña **Changes**, haz clic derecho sobre el archivo y selecciona **Discard Changes**.
 
-### 1. Crear una carpeta nueva
-
-Ejemplo:
-
-```
-laboratorio4/
-```
-
-### 2. Guardar el código del ejercicio
-
-Ejemplo:
-
-```
-sensor_dht11.ino
-```
-
-### 3. Abrir GitHub Desktop
-
-### 4. Crear commit
-
-Ejemplo de mensaje:
-
-```
-Laboratorio 4: Lectura de sensor DHT11
-```
-
-### 5. Hacer push a GitHub
+### Caso B: Si ya hiciste Commit y Push
+Si subiste algo que no funciona y quieres deshacerlo:
+1. Ve a la pestaña **History**.
+2. Haz clic derecho sobre el commit que quieres anular.
+3. Selecciona **Revert Changes in Commit**. Esto crea un nuevo estado que "cura" el error.
+4. Presiona **Push origin**.
 
 ---
 
-# 10. Qué se evaluará en el repositorio
+# 10. Opción Extra: Comandos por Consola (Git Bash)
 
-El repositorio debe mostrar:
+Si prefieres usar la terminal, abre **Git Bash** en la carpeta de tu proyecto:
 
-* Código funcional
-* Organización por carpetas de laboratorio
-* Commits con mensajes claros
-* Historial de desarrollo
-
----
-
-# 11. Resumen rápido
-
-| Concepto    | Significado                    |
-| ----------- | ------------------------------ |
-| Repositorio | Carpeta del proyecto en GitHub |
-| Commit      | Registro de cambios            |
-| Push        | Subir cambios a GitHub         |
-| Pull        | Descargar cambios              |
-| Branch      | Rama de desarrollo             |
+| Acción | Comando |
+| :--- | :--- |
+| **Clonar** | `git clone [URL_DEL_REPO]` |
+| **Preparar cambios** | `git add .` |
+| **Guardar (Commit)** | `git commit -m "Mensaje explicativo"` |
+| **Subir (Push)** | `git push origin main` |
+| **Bajar (Pull)** | `git pull origin main` |
+| **Restaurar archivo** | `git restore [archivo.ino]` |
+| **Ver historial** | `git log --oneline` |
+| **Resetear al pasado** | `git reset --hard [ID_DEL_COMMIT]` |
 
 ---
 
----
+# 11. Recursos de instalación
 
-# 12. Recursos de instalación
-
-A continuación se incluyen algunos videos que explican el proceso de instalación y uso básico de Git y GitHub. Estos recursos pueden servir como apoyo si se presentan dudas durante la configuración inicial.
-
-## Instalación y configuración básica de Git y GitHub
-
-* Instalación y uso básico de Git y GitHub
-  https://www.youtube.com/watch?v=cae7EFzd02M
-
-* Introducción a GitHub y flujo básico de trabajo
-  https://www.youtube.com/watch?v=r4ynZyLuf-o
-
-* Uso de GitHub para gestionar proyectos
-  https://www.youtube.com/watch?v=mq-CDUwHe8Y
-
-Se recomienda ver al menos uno de estos videos antes de comenzar a utilizar GitHub para los laboratorios.
-
+* Instalación y uso básico de Git y GitHub: [https://www.youtube.com/watch?v=cae7EFzd02M](https://www.youtube.com/watch?v=cae7EFzd02M)
+* Introducción a GitHub y flujo básico: [https://www.youtube.com/watch?v=r4ynZyLuf-o](https://www.youtube.com/watch?v=r4ynZyLuf-o)
 
 # Herramientas utilizadas
 
 * Arduino IDE
 * GitHub
 * GitHub Desktop
+* Git Bash
