@@ -1,0 +1,57 @@
+# Ejemplo Integrado: Instrumentación, IoT y Sistemas Embebidos (ESP32)
+
+El presente ejemplo integra los conceptos fundamentales de la **Práctica 2**, conectando el mundo físico (sensores y actuadores) con el mundo digital (Dashboards Web e Internet de las Cosas).
+
+## 1. Arquitectura del Sistema
+
+El sistema utiliza un **ESP32** para gestionar cuatro pilares de la electrónica moderna:
+1.  **Entradas Analógicas (ADC):** Lectura de un potenciómetro para simular sensores.
+2.  **Salidas Analógicas (PWM):** Control de intensidad lumínica (dimmer) en un LED.
+3.  **Interrupciones (ISR):** Gestión de eventos en tiempo real mediante un botón físico.
+4.  **Internet de las Cosas (IoT):** Comunicación bidireccional mediante el protocolo **MQTT**.
+
+---
+
+## 2. Diagrama de Conexiones (Pinout)
+
+| Componente | Pin ESP32 | Función |
+| :--- | :--- | :--- |
+| **Potenciómetro (5k)** | **D34** | Entrada ADC (Señal análoga) |
+| **Botón Físico** | **D4** | Interrupción Externa (PULLUP) |
+| **LED Indicador** | **D18** | Salida Digital (Estado del botón) |
+| **LED PWM** | **D19** | Salida Análoga (Control de brillo) |
+
+> **Nota:** El potenciómetro debe conectarse a **3.3V**. Los LEDs deben llevar una resistencia de **1k$\Omega$** en serie para protección.
+
+---
+
+## 3. Fundamentos Técnicos para la Sustentación
+
+### ¿Por qué el rango es de 0 a 4095?
+El ESP32 tiene un conversor de **12 bits**. Esto significa que puede dividir el voltaje de entrada ($0V$ a $3.3V$) en $2^{12} = 4096$ niveles distintos. En programación, esto se traduce en un rango que inicia en $0$ y termina en $4095$.
+
+### Gestión de Interrupciones y Debounce
+* **Tipo de Interrupción:** Usamos una interrupción por hardware de tipo **External Interrupt** con disparo por flanco de bajada (**FALLING**).
+* **Antirrebote (Debounce) Diferido:** Los botones mecánicos generan ruido eléctrico ("rebotes"). Implementamos una lógica que detecta el pulso, espera **50ms** para que la señal se estabilice y confirma el estado físico antes de validar el conteo.
+
+### Protocolos de Comunicación
+1.  **UART (Local):** Comunicación serial asíncrona a **115200 baudios** para el Monitor Serial y Graficador (Plotter).
+2.  **MQTT (Remoto):** Protocolo ligero de mensajería para IoT. Permite que el ESP32 publique datos (`Publish`) y reciba órdenes (`Subscribe`) desde el Dashboard Web en tiempo real.
+
+---
+
+## 4. El Dashboard Web (HTML/JS)
+
+La interfaz web utiliza **WebSockets** para conectarse al broker MQTT. 
+* **Sincronización:** Si presionas el botón físico, el contador aumenta en la web.
+* **Control Remoto:** Si presionas el botón en la página, el ESP32 recibe la orden y cambia físicamente el estado del LED en la protoboard.
+
+---
+
+## 5. Instrucciones de Uso
+
+1.  Cargar el código `.ino` al ESP32 asegurándose de tener instalada la librería `PubSubClient`.
+2.  Abrir el **Monitor Serial** a 115200 baudios para verificar la conexión Wi-Fi.
+3.  Abrir el archivo `index.html` en un navegador.
+4.  Girar el potenciómetro y observar la respuesta en el **Serial Plotter** y en la **Barra de Nivel** del Dashboard.
+
