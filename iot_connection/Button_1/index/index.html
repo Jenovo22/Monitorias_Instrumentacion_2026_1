@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>ESP32 IoT Dashboard</title>
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+<style>
+body {
+  background: linear-gradient(135deg, #0f172a, #020617);
+  color: white;
+  font-family: Arial;
+  text-align: center;
+  padding: 40px;
+}
+
+.card {
+  background: #020617;
+  border-radius: 15px;
+  padding: 30px;
+  max-width: 400px;
+  margin: auto;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 10px;
+  background: #22c55e;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #16a34a;
+}
+
+.status {
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.counter {
+  font-size: 50px;
+  margin: 20px 0;
+  color: #38bdf8;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h1>ESP32 Botón IoT</h1>
+
+  <div class="counter" id="contador">0</div>
+
+  <button onclick="enviarBoton()">Presionar desde la web</button>
+
+  <div class="status" id="estado">Conectando...</div>
+</div>
+
+<script>
+// 🔹 Configuración MQTT
+const BROKER = "wss://broker.emqx.io:8084/mqtt";
+const TOPIC = "esp32/boton";
+
+const client = mqtt.connect(BROKER, {
+  clientId: "web_" + Math.random().toString(16).substr(2,8)
+});
+
+// 🔹 Eventos MQTT
+client.on("connect", () => {
+  document.getElementById("estado").innerText = "✅ Conectado";
+  client.subscribe(TOPIC);
+});
+
+client.on("message", (topic, message) => {
+  const data = JSON.parse(message.toString());
+
+  document.getElementById("contador").innerText = data.contador;
+});
+
+// 🔹 Botón web
+function enviarBoton() {
+  client.publish(TOPIC, JSON.stringify({ accion: "web" }));
+}
+</script>
+
+</body>
+</html>
