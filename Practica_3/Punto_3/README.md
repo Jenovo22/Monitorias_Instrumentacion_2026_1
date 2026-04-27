@@ -130,6 +130,7 @@ Para este ejercicio se utiliza el bus **VSPI** estándar del ESP32. Es fundament
  * Ejercicio 3: Sensor BMP280 de Presión y Temperatura
  */
  
+ 
 ```cpp 
 
 #include <SPI.h>
