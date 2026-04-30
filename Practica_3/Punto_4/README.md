@@ -409,117 +409,530 @@ void loop() {
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HMI MQTT - Laboratorio de Instrumentación</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; background-color: #e9ecef; margin-top: 40px; }
-        .panel { background: white; width: 90%; max-width: 450px; margin: auto; padding: 30px; border-radius: 12px; box-shadow: 0px 4px 15px rgba(0,0,0,0.2); }
-        h1 { color: #343a40; font-size: 24px; }
-        .estado { font-size: 14px; padding: 10px; border-radius: 5px; margin-bottom: 25px; font-weight: bold; }
-        .desconectado { background-color: #f8d7da; color: #721c24; }
-        .conectado { background-color: #d4edda; color: #155724; }
-        .lectura-caja { background-color: #f8f9fa; border: 2px solid #dee2e6; border-radius: 10px; padding: 20px; margin-bottom: 30px; }
-        .dato { font-size: 50px; color: #007bff; font-weight: bold; margin: 10px 0; }
-        button { padding: 15px 0; font-size: 18px; font-weight: bold; color: white; border: none; border-radius: 8px; cursor: pointer; margin: 10px 2%; width: 45%; transition: 0.3s; }
-        .btn-on { background-color: #28a745; }
-        .btn-on:hover { background-color: #218838; }
-        .btn-off { background-color: #dc3545; }
-        .btn-off:hover { background-color: #c82333; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>HMI MQTT - Instrumentación Electrónica</title>
+
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+<style>
+:root {
+  --azul: #2563eb;
+  --azul-claro: #38bdf8;
+  --verde: #22c55e;
+  --verde-oscuro: #16a34a;
+  --rojo: #ef4444;
+  --rojo-oscuro: #b91c1c;
+  --amarillo: #f59e0b;
+  --morado: #8b5cf6;
+  --fondo: #020617;
+  --tarjeta: #0f172a;
+  --borde: #1e293b;
+  --texto: #f8fafc;
+  --texto-suave: #cbd5e1;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.35), transparent 35%),
+    radial-gradient(circle at bottom right, rgba(139, 92, 246, 0.25), transparent 30%),
+    linear-gradient(135deg, #020617, #0f172a);
+  color: var(--texto);
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 30px;
+}
+
+.contenedor {
+  width: 100%;
+  max-width: 1100px;
+  margin: auto;
+}
+
+.encabezado {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.encabezado h1 {
+  margin: 0;
+  font-size: 36px;
+}
+
+.encabezado p {
+  color: var(--texto-suave);
+  margin-top: 10px;
+}
+
+.estado-contenedor {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+}
+
+.estado {
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.conectado {
+  background: rgba(34, 197, 94, 0.15);
+  color: #86efac;
+  border: 1px solid rgba(34, 197, 94, 0.45);
+}
+
+.desconectado {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.45);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.card {
+  background: rgba(15, 23, 42, 0.96);
+  border: 1px solid var(--borde);
+  border-radius: 22px;
+  padding: 28px;
+  box-shadow: 0 22px 45px rgba(0,0,0,0.45);
+}
+
+.card h2 {
+  margin: 0 0 10px 0;
+  font-size: 22px;
+}
+
+.card p {
+  margin: 0 0 22px 0;
+  color: var(--texto-suave);
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+.lectura {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.numero {
+  font-size: 62px;
+  font-weight: 900;
+  color: var(--azul-claro);
+}
+
+.unidad {
+  margin-top: 8px;
+  color: var(--texto-suave);
+  font-weight: bold;
+}
+
+.barra {
+  width: 100%;
+  height: 14px;
+  background: #1e293b;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 16px;
+}
+
+.relleno {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--azul-claro), var(--azul));
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+
+.botones {
+  display: grid;
+  gap: 14px;
+}
+
+.botones-dobles {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.botones-triples {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+button {
+  border: none;
+  border-radius: 16px;
+  padding: 16px;
+  color: white;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+button:hover {
+  transform: scale(1.04);
+  opacity: 0.95;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+.btn-on {
+  background: linear-gradient(135deg, var(--verde), var(--verde-oscuro));
+}
+
+.btn-off {
+  background: linear-gradient(135deg, var(--rojo), var(--rojo-oscuro));
+}
+
+.btn-servo-0 {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+}
+
+.btn-servo-90 {
+  background: linear-gradient(135deg, var(--amarillo), #d97706);
+}
+
+.btn-servo-180 {
+  background: linear-gradient(135deg, var(--morado), #6d28d9);
+}
+
+.registro {
+  margin-top: 18px;
+  padding: 14px;
+  border-radius: 14px;
+  background: #020617;
+  color: var(--texto-suave);
+  border: 1px solid var(--borde);
+  font-size: 13px;
+}
+
+.topic {
+  margin-top: 16px;
+  padding: 12px;
+  background: #020617;
+  color: #94a3b8;
+  border-radius: 14px;
+  border: 1px solid var(--borde);
+  font-size: 12px;
+  word-break: break-all;
+}
+
+.topic strong {
+  color: var(--texto);
+}
+
+.footer {
+  text-align: center;
+  margin-top: 30px;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+@media (max-width: 850px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .botones-triples {
+    grid-template-columns: 1fr;
+  }
+
+  .botones-dobles {
+    grid-template-columns: 1fr;
+  }
+
+  .encabezado h1 {
+    font-size: 28px;
+  }
+
+  .numero {
+    font-size: 48px;
+  }
+}
+</style>
 </head>
+
 <body>
 
-    <div class="panel">
-        <h1>Panel de Control IoT</h1>
-        <div id="estado-conexion" class="estado desconectado">Conectando al Broker...</div>
-        
-        <div class="lectura-caja">
-            <h2 style="margin: 0; color: #6c757d; font-size: 18px;">Valor del Potenciómetro (ADC)</h2>
-            <div class="dato" id="valor-pot">---</div>
-        </div>
-        
-        <hr style="border: 1px solid #eee; margin-bottom: 25px;">
-        
-        <h2 style="margin: 0 0 15px 0; color: #6c757d; font-size: 18px;">Control del LED (Actuador)</h2>
-        <div>
-            <button class="btn-on" onclick="enviarComando('1')">ENCENDER</button>
-            <button class="btn-off" onclick="enviarComando('0')">APAGAR</button>
-        </div>
+<div class="contenedor">
+
+  <header class="encabezado">
+    <h1>Panel HMI MQTT</h1>
+    <p>ESP32 | Potenciómetro | LED | Servomotor | Broker EMQX</p>
+  </header>
+
+  <div class="estado-contenedor">
+    <div id="estado" class="estado desconectado">Conectando al broker...</div>
+  </div>
+
+  <section class="grid">
+
+    <!-- POTENCIÓMETRO -->
+    <div class="card">
+      <h2>Sensor: Potenciómetro</h2>
+      <p>
+        Valor analógico recibido desde el ESP32. También puede tomar control del servo
+        cuando se detecta movimiento real del potenciómetro.
+      </p>
+
+      <div class="lectura">
+        <div class="numero" id="valorPot">---</div>
+        <div class="unidad">ADC / 4095</div>
+      </div>
+
+      <div class="barra">
+        <div class="relleno" id="barraPot"></div>
+      </div>
+
+      <div class="topic">
+        <strong>Tópico:</strong> instrumentacion/grupo1/potenciometro
+      </div>
     </div>
 
-    <script>
-        // --- CONFIGURACIÓN DEL BROKER ---
-        const broker = "broker.hivemq.com";
-        const puerto = 8000; // Puerto WebSocket (Obligatorio para HTML)
-        const clientId = "Web_" + Math.random().toString(16).substr(2, 8);
-        
-        // Tópicos MQTT
-        const topicPotenciometro = "instrumentacion/grupo1/potenciometro";
-        const topicControl = "instrumentacion/grupo1/control";
+    <!-- SERVO ESTADO -->
+    <div class="card">
+      <h2>Estado del Servomotor</h2>
+      <p>
+        Posición actual reportada por el ESP32. Puede ser resultado del potenciómetro
+        o de un comando enviado desde esta página.
+      </p>
 
-        // Instancia del cliente MQTT
-        const client = new Paho.MQTT.Client(broker, puerto, clientId);
+      <div class="lectura">
+        <div class="numero" id="valorServo">---</div>
+        <div class="unidad">grados</div>
+      </div>
 
-        // Callbacks
-        client.onConnectionLost = onConnectionLost;
-        client.onMessageArrived = onMessageArrived;
+      <div class="barra">
+        <div class="relleno" id="barraServo"></div>
+      </div>
 
-        // Opciones de conexión
-        const options = {
-            timeout: 3,
-            onSuccess: onConnect,
-            onFailure: function (message) {
-                const estadoDiv = document.getElementById("estado-conexion");
-                estadoDiv.className = "estado desconectado";
-                estadoDiv.innerHTML = "Error de conexión: " + message.errorMessage;
-            }
-        };
+      <div class="topic">
+        <strong>Tópico:</strong> instrumentacion/grupo1/servo/estado
+      </div>
+    </div>
 
-        // Iniciar conexión automáticamente al abrir la página
-        client.connect(options);
+    <!-- LED -->
+    <div class="card">
+      <h2>Control del LED</h2>
+      <p>
+        Envía comandos digitales al ESP32 para encender o apagar el LED conectado
+        al GPIO 2 o el LED integrado de la placa.
+      </p>
 
-        // Al conectarse exitosamente
-        function onConnect() {
-            console.log("Conectado al broker MQTT");
-            const estadoDiv = document.getElementById("estado-conexion");
-            estadoDiv.className = "estado conectado";
-            estadoDiv.innerHTML = "🟢 Conectado al Servidor";
-            
-            // Suscribirse para escuchar el potenciómetro
-            client.subscribe(topicPotenciometro);
-        }
+      <div class="botones botones-dobles">
+        <button class="btn-on" onclick="enviarLED('1')">Encender</button>
+        <button class="btn-off" onclick="enviarLED('0')">Apagar</button>
+      </div>
 
-        // Si se pierde la conexión
-        function onConnectionLost(responseObject) {
-            if (responseObject.errorCode !== 0) {
-                const estadoDiv = document.getElementById("estado-conexion");
-                estadoDiv.className = "estado desconectado";
-                estadoDiv.innerHTML = "🔴 Desconectado: " + responseObject.errorMessage;
-            }
-        }
+      <div class="registro" id="registroLED">
+        Último comando LED: ninguno
+      </div>
 
-        // Al recibir un mensaje del ESP32
-        function onMessageArrived(message) {
-            if (message.destinationName === topicPotenciometro) {
-                // Actualizar el número gigante en la pantalla
-                document.getElementById("valor-pot").innerHTML = message.payloadString;
-            }
-        }
+      <div class="topic">
+        <strong>Tópico:</strong> instrumentacion/grupo1/control
+      </div>
+    </div>
 
-        // Al presionar los botones de control
-        function enviarComando(estado) {
-            if (client.isConnected()) {
-                const message = new Paho.MQTT.Message(estado);
-                message.destinationName = topicControl;
-                client.send(message);
-                console.log("Comando publicado: " + estado);
-            } else {
-                alert("Espera a que el sistema se conecte al servidor.");
-            }
-        }
-    </script>
+    <!-- SERVO -->
+    <div class="card">
+      <h2>Control del Servomotor</h2>
+      <p>
+        Envía posiciones fijas al servo. Si luego se mueve el potenciómetro,
+        el potenciómetro volverá a tomar control.
+      </p>
+
+      <div class="botones botones-triples">
+        <button class="btn-servo-0" onclick="enviarServo('0')">0°</button>
+        <button class="btn-servo-90" onclick="enviarServo('90')">90°</button>
+        <button class="btn-servo-180" onclick="enviarServo('180')">180°</button>
+      </div>
+
+      <div class="registro" id="registroServo">
+        Último comando servo: ninguno
+      </div>
+
+      <div class="topic">
+        <strong>Tópico:</strong> instrumentacion/grupo1/servo
+      </div>
+    </div>
+
+  </section>
+
+  <div class="footer">
+    Comunicación bidireccional MQTT usando WebSocket seguro desde navegador.
+  </div>
+
+</div>
+
+<script>
+// ------------------------------------------------------
+// CONFIGURACIÓN MQTT
+// ------------------------------------------------------
+const BROKER = "wss://broker.emqx.io:8084/mqtt";
+
+const TOPIC_POTENCIOMETRO = "instrumentacion/grupo1/potenciometro";
+const TOPIC_LED = "instrumentacion/grupo1/control";
+const TOPIC_SERVO = "instrumentacion/grupo1/servo";
+const TOPIC_SERVO_ESTADO = "instrumentacion/grupo1/servo/estado";
+
+const clientId = "web_" + Math.random().toString(16).substring(2, 10);
+
+const client = mqtt.connect(BROKER, {
+  clientId: clientId,
+  clean: true,
+  connectTimeout: 5000,
+  reconnectPeriod: 3000
+});
+
+// ------------------------------------------------------
+// EVENTO: CONEXIÓN EXITOSA
+// ------------------------------------------------------
+client.on("connect", () => {
+  console.log("Conectado al broker MQTT");
+
+  const estado = document.getElementById("estado");
+  estado.className = "estado conectado";
+  estado.innerText = "✅ Conectado al broker MQTT";
+
+  client.subscribe(TOPIC_POTENCIOMETRO, (error) => {
+    if (error) {
+      console.error("Error suscribiendo a potenciómetro:", error);
+    } else {
+      console.log("Suscrito a:", TOPIC_POTENCIOMETRO);
+    }
+  });
+
+  client.subscribe(TOPIC_SERVO_ESTADO, (error) => {
+    if (error) {
+      console.error("Error suscribiendo a estado del servo:", error);
+    } else {
+      console.log("Suscrito a:", TOPIC_SERVO_ESTADO);
+    }
+  });
+});
+
+// ------------------------------------------------------
+// EVENTO: MENSAJE RECIBIDO
+// ------------------------------------------------------
+client.on("message", (topic, message) => {
+  const payload = message.toString();
+
+  console.log("Mensaje recibido:", topic, payload);
+
+  if (topic === TOPIC_POTENCIOMETRO) {
+    actualizarPotenciometro(payload);
+  }
+
+  if (topic === TOPIC_SERVO_ESTADO) {
+    actualizarServo(payload);
+  }
+});
+
+// ------------------------------------------------------
+// EVENTO: RECONECTANDO
+// ------------------------------------------------------
+client.on("reconnect", () => {
+  const estado = document.getElementById("estado");
+  estado.className = "estado desconectado";
+  estado.innerText = "Reconectando al broker...";
+});
+
+// ------------------------------------------------------
+// EVENTO: ERROR
+// ------------------------------------------------------
+client.on("error", (error) => {
+  console.error("Error MQTT:", error);
+
+  const estado = document.getElementById("estado");
+  estado.className = "estado desconectado";
+  estado.innerText = "❌ Error de conexión MQTT. Ver consola.";
+});
+
+// ------------------------------------------------------
+// EVENTO: DESCONECTADO
+// ------------------------------------------------------
+client.on("close", () => {
+  const estado = document.getElementById("estado");
+  estado.className = "estado desconectado";
+  estado.innerText = "🔴 Desconectado del broker";
+});
+
+// ------------------------------------------------------
+// ACTUALIZAR POTENCIÓMETRO EN PANTALLA
+// ------------------------------------------------------
+function actualizarPotenciometro(valor) {
+  const numero = parseInt(valor);
+
+  document.getElementById("valorPot").innerText = valor;
+
+  if (!isNaN(numero)) {
+    let porcentaje = (numero / 4095) * 100;
+    porcentaje = Math.max(0, Math.min(100, porcentaje));
+    document.getElementById("barraPot").style.width = porcentaje + "%";
+  }
+}
+
+// ------------------------------------------------------
+// ACTUALIZAR SERVO EN PANTALLA
+// ------------------------------------------------------
+function actualizarServo(angulo) {
+  const numero = parseInt(angulo);
+
+  document.getElementById("valorServo").innerText = angulo + "°";
+
+  if (!isNaN(numero)) {
+    let porcentaje = (numero / 180) * 100;
+    porcentaje = Math.max(0, Math.min(100, porcentaje));
+    document.getElementById("barraServo").style.width = porcentaje + "%";
+  }
+}
+
+// ------------------------------------------------------
+// ENVIAR COMANDO LED
+// ------------------------------------------------------
+function enviarLED(valor) {
+  if (client.connected) {
+    client.publish(TOPIC_LED, valor);
+
+    const texto = valor === "1" ? "Encender" : "Apagar";
+    document.getElementById("registroLED").innerText =
+      "Último comando LED: " + texto;
+
+    console.log("Comando LED enviado:", valor);
+  } else {
+    alert("La página no está conectada al broker MQTT.");
+  }
+}
+
+// ------------------------------------------------------
+// ENVIAR COMANDO SERVO
+// ------------------------------------------------------
+function enviarServo(angulo) {
+  if (client.connected) {
+    client.publish(TOPIC_SERVO, angulo);
+
+    document.getElementById("registroServo").innerText =
+      "Último comando servo desde la web: " + angulo + "°";
+
+    console.log("Comando servo enviado:", angulo);
+  } else {
+    alert("La página no está conectada al broker MQTT.");
+  }
+}
+</script>
+
 </body>
 </html>
 
