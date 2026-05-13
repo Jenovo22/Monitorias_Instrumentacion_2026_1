@@ -7,8 +7,8 @@
 
 // --- CREDENCIALES DE RED WIFI ---
 // TODO: Los estudiantes deben poner el nombre y contraseña de su red (o compartir datos desde el celular)
-const char* ssid     = "Gilcito";
-const char* password = "Pandequeso";
+const char* ssid     = "Novoa";
+const char* password = "1234567890";
 
 // Configurar el servidor web en el puerto 80 (estándar HTTP)
 WiFiServer server(80);
