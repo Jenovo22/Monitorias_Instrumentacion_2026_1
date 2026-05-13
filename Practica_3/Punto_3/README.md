@@ -67,14 +67,12 @@ Presion Barometrica: 1012.35 hPa
 Altitud Aprox: 120.45 m
 ------------------------------------
 
-Aquí tienes la estructura completa para el archivo README.md del Punto 3 (Interfaz SPI), diseñada para que la copies y pegues directamente. Se ha omitido el bloque de código y actualizado la autoría según tus instrucciones.
 
 Markdown
 # PUNTO 3 SPI: Obtención de presión barométrica y temperatura mediante sensor BMP280
 
 ## Objetivo
 Entender y manejar la interfaz de comunicación serial síncrona **SPI (Serial Peripheral Interface)** para la adquisición de datos climáticos de alta precisión mediante un sensor barométrico.
-
 ---
 
 ## Descripción general
@@ -130,7 +128,8 @@ Para este ejercicio se utiliza el bus **VSPI** estándar del ESP32. Es fundament
  * Ejercicio 3: Sensor BMP280 de Presión y Temperatura
  */
  
- 
+---
+
 ```cpp 
 
 #include <SPI.h>
