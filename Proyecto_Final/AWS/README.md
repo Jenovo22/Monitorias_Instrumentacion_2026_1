@@ -154,7 +154,7 @@ Cuando se presiona el botón físico conectado a la ESP32, el contador aumenta y
 
 Para comprobar que todo funciona correctamente:
 
-1. Cargar el código `Button_1.ino` en la ESP32.
+1. Cargar el código  en la ESP32.
 
 2. Verificar que la ESP32 se conecte correctamente a WiFi.
 
